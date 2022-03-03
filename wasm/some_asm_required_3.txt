@@ -1,0 +1,35 @@
+import ctypes
+import string
+
+
+def slash_string_to_hex_arr(input_str):
+    a = []
+    input_iter = iter(input_str)
+    while x := next(input_iter, None):
+        if x == '\\':
+            y = '0x' + next(input_iter, None) + next(input_iter, None)
+            a.append(int(y, 16))
+        else:
+            a.append(ord(x))
+    return a
+
+
+arr_1024 = slash_string_to_hex_arr(
+    "\9dn\93\c8\\b2\\b9A\8b\c2\90\8bd\c7\9e\c9\88b\95\91\90\dac\c5\95\95\d82\c4\c5\92\8ee\92\96\97\8ca\c4\93\92\90\\00\\00")
+
+
+def encode(char, index):
+    arr_1067 = slash_string_to_hex_arr("\\f1\\a7\\f0\\07\ed")
+    var9 = index % 5
+    var10 = 4 - var9
+    var11 = arr_1067[var10]
+    var13 = ctypes.c_int32(var11 << 24).value
+    var14 = ctypes.c_int32(var13 >> 24).value
+    var16 = ctypes.c_int32(ord(char) ^ var14).value
+    return ctypes.c_uint8(var16).value
+
+
+for i in range(len(arr_1024)):
+    for c in string.printable:
+        if encode(c, i) == arr_1024[i]:
+            print(c, end='')
